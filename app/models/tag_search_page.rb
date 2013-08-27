@@ -78,7 +78,7 @@ class TagSearchPage < Page
   
   #### "Behavior" methods ####
   def cache?
-    true
+    false # true
   end
   
   def found_tags
@@ -89,7 +89,7 @@ class TagSearchPage < Page
   end
   
   def render
-    self.requested_tag = @request.parameters[:tag] if @request.parameters[:tag]
+    self.requested_tag = @request.parameters[:q] if @request.parameters[:q]
     self.title = "#{self.title} #{requested_tag}" if requested_tag
     
     super
