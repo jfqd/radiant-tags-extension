@@ -1,4 +1,4 @@
-module RadiusTags
+module MetaTagsTags
   include Radiant::Taggable
   include ActionView::Helpers::TextHelper
   
@@ -82,7 +82,7 @@ module RadiusTags
   
   desc %{
     Render a Tag cloud
-    The results_page attribute will default to #{Radiant::Config['tags.results_page_url']}
+    The results_page attribute will default to #{TagsExtension::DEFAULT_RESULTS_URL}
     
     *Usage:*
     <pre><code><r:tag_cloud [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
@@ -91,11 +91,11 @@ module RadiusTags
     tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 5).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     output = "<ol class=\"tag_cloud\">"
     if tag_cloud.length > 0
     	build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-    		output += "<li class=\"#{cloud_class}\"><span>#{pluralize(amount, 'page is', 'pages are')} tagged with </span><a href=\"#{results_page}/#{url_encode(tag)}\" class=\"tag\">#{tag}</a></li>"
+    		output += "<li class=\"#{cloud_class}\"><span>#{pluralize(amount, 'page is', 'pages are')} tagged with </span><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag}</a></li>"
     	end
     else
     	return I18n.t('tags_extension.no_tags_found')
@@ -105,7 +105,7 @@ module RadiusTags
 
   desc %{
     Render a Tag cloud with div-tags
-    The results_page attribute will default to #{Radiant::Config['tags.results_page_url']}
+    The results_page attribute will default to #{TagsExtension::DEFAULT_RESULTS_URL}
     
     *Usage:*
     <pre><code><r:tag_cloud_div [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
@@ -114,11 +114,11 @@ module RadiusTags
     tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 10).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     output = "<div class=\"tag_cloud\">"
     if tag_cloud.length > 0
     	build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-    		output += "<div class=\"#{cloud_class}\"><a href=\"#{results_page}/#{url_encode(tag)}\" class=\"tag\">#{tag}</a></div>\n"
+    		output += "<div class=\"#{cloud_class}\"><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag}</a></div>\n"
     	end
     else
     	return I18n.t('tags_extension.no_tags_found')
@@ -128,7 +128,7 @@ module RadiusTags
  
   desc %{
     Render a Tag list, more for 'categories'-ish usage, i.e.: Cats (2) Logs (1) ...
-    The results_page attribute will default to #{Radiant::Config['tags.results_page_url']}
+    The results_page attribute will default to #{TagsExtension::DEFAULT_RESULTS_URL}
     
     *Usage:*
     <pre><code><r:tag_cloud_list [results_page="/some/url"] [scope="/some/url"]/></code></pre>
@@ -137,11 +137,11 @@ module RadiusTags
     tag_cloud = MetaTag.cloud({:limit => 100}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     output = "<ul class=\"tag_list\">"
     if tag_cloud.length > 0
       build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/#{url_encode(tag)}\" class=\"tag\">#{tag} (#{amount})</a></li>"
+        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag} (#{amount})</a></li>"
       end
     else
       return I18n.t('tags_extension.no_tags_found')
@@ -151,9 +151,9 @@ module RadiusTags
  
   desc "List the current page's tags"
   tag "tag_list" do |tag|
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     output = []
-    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{results_page}/#{t}\" class=\"tag\">#{t}</a>"}
+    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{results_page}/?q=#{t}\" class=\"tag\">#{t}</a>"}
     output.flatten.join ", "
   end
   
@@ -185,9 +185,9 @@ module RadiusTags
   end
   
   tag "tags:each:link" do |tag|
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     name = tag.locals.meta_tag.name
-    return "<a href=\"#{results_page}/#{url_encode(name)}\" class=\"tag\">#{name}</a>"
+    return "<a href=\"#{results_page}/?q=#{url_encode(name)}\" class=\"tag\">#{name}</a>"
   end
   
   tag 'tags:each:if_first' do |tag|
@@ -239,9 +239,9 @@ module RadiusTags
   end
   
   tag "all_tags:each:link" do |tag|
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     name = tag.locals.meta_tag.name
-    "<a href=\"#{results_page}/#{url_encode(name)}\" class=\"tag\">#{name}</a>"
+    "<a href=\"#{results_page}/?q=#{url_encode(name)}\" class=\"tag\">#{name}</a>"
   end
 
   tag "all_tags:each:popularity" do |tag|
@@ -249,7 +249,7 @@ module RadiusTags
   end
 
   tag "all_tags:each:url" do |tag|
-    results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
+    results_page = tag.attr['results_page'] || tags_results_page
     name = tag.locals.meta_tag.name
     "#{results_page}/#{url_encode(name)}"
   end
@@ -272,6 +272,14 @@ module RadiusTags
   end
   
   private
+  
+  def tags_results_page
+    if defined?(Globalize2Extension) && current_site.package_with_globalized_support?
+      I18n.t('named_routes_path./:locale/search/tags/:tag/').sub("/:tag/","")
+    else
+      I18n.t('named_routes_path./search/tags/:tag/').sub("/:tag/","")
+    end
+  end
   
   def build_tag_cloud(tag_cloud, style_list)
     max, min = 0, 0
@@ -296,7 +304,7 @@ module RadiusTags
     ttag = tag.attr['with'] || @request.parameters[:tag]
     
     scope_path = scope_attr == 'current_page' ? @request.request_uri : scope_attr
-    scope = Page.find_by_path scope_path
+    scope = Page.find_by_url scope_path
     return "The scope attribute must be a valid url to an existing page." if scope.nil? || scope.class_name.eql?('FileNotFoundPage')
     
     if with_any

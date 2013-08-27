@@ -1,5 +1,9 @@
+---
 en:
+  named_routes_path:
+    "/search/tags/:tag/": /search/tags/:tag/
+    "/:locale/search/tags/:tag/": /:locale/search/tags/:tag/
   tags_extension:
-    no_tags_found: "<p>No tags found.</p>"
+    no_tags_found: "<p class='no-tags-found'>No tags found.</p>"
     tags: Tags
-    type_a_tag: Separate tags with ;
+    type_a_tag: "Separate tags with ;"

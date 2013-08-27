@@ -1,5 +1,6 @@
+---
 nl:
   tags_extension:
-    no_tags_found: "<p>Geen tags gevonden.</p>"
+    no_tags_found: "<p class='no-tags-found'>Geen tags gevonden.</p>"
     tags: Tags
-    type_a_tag: Onderscheid tags met ;
+    type_a_tag: "Onderscheid tags met ;"

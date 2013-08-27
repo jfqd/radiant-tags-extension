@@ -25,8 +25,8 @@ config.gem 'radiant-tags-extension'
 
 1. Copy the extension to your vendor/extensions directory as you would any other extension or use `script/extension install tags`
 2. Run 'rake radiant:extensions:tags:install'
-3. Make a page to sit in /search/by-tag, and give it the "Tag Search" pagetype.
-	If you want to change this location, it's in Radiant::Config['tags.results_page_url'].
+3. Make a page to sit in /search/tags/ (and it localized versions), and give it the "Tag Search" pagetype.
+	 If you want to change this location, edit the routes file and the corresponding locale file(s).
 
 Done!
 Here's a sample results page to get you started;
@@ -45,7 +45,9 @@ Here's a sample results page to get you started;
 	  </ul>
 	</r:search:results>
 
-== VHost Extension
+== Compatibility
+
+=== VHost Extension
 
 If you use the VHost-Extension place the following snippet inside of your vhost.yml file:
 

@@ -1,7 +1,9 @@
 ---
 de:
+  named_routes_path:
+    "/search/tags/:tag/": /suche/kategorien/:tag/
+    "/:locale/search/tags/:tag/": /:locale/suche/kategorie/:tag/
   tags_extension:
-    no_tags_found: "<p>Es wurden keine Schlagworte gefunden.</p>"
-    tags: "Schlagworte"
-    type_a_tag: Separate tags with ;
-
+    no_tags_found: "<p class='no-tags-found'>Es wurden keine Kategorien gefunden.</p>"
+    tags: "Kategorien"
+    type_a_tag: "Kategorien durch ein Semikolon (;) trennen"

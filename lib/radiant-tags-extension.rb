@@ -1,8 +1,8 @@
 module RadiantTagsExtension
-  VERSION = '1.6.9'
+  VERSION = '1.6.10.jfqd'
   AUTHORS = ['Benny Degezelle']
   EMAIL = ['benny@gorilla-webdesign.be']
-  HOMEPAGE = 'http://ext.radiantcms.org/extensions/195-tags'
+  HOMEPAGE = 'https://github.com/jfqd/radiant-tags-extension'
   SUMMARY = %q{Tagging for Radiant CMS}
-  DESCRIPTION = %q{This extension enhances the page model with tagging capabilities, tagging as in \"2.0" and tagclouds.}
+  DESCRIPTION = %q{This extension enhances the page model with tagging capabilities, tagging as in \"2.0" and tagclouds. This is a fork of https://github.com/jomz/radiant-tags-extension}
 end
