@@ -18,12 +18,23 @@ class MetaTag < ActiveRecord::Base
   validates_uniqueness_of :name, :case_sensitive => false
   validates_format_of :name, :with => re_format, 
     :message => "can not contain special characters"
-    
-  has_many_polymorphs :taggables, 
-    :from => [:pages], 
-    :through => :taggings, 
-    :dependent => :destroy,
-    :skip_duplicates => false
+  
+  begin
+    has_many_polymorphs :taggables, 
+      :from => [:pages], 
+      :through => :taggings, 
+      :dependent => :destroy,
+      :skip_duplicates => false
+  rescue
+    # ugly hack to get migrations pass
+  end
+  
+  named_scope :with_count, {
+    :select => "meta_tags.*, count(tt.id) AS use_count", 
+    :joins => "INNER JOIN taggings as tt ON tt.meta_tag_id = meta_tags.id", 
+    :group => "meta_tags.id",
+    :order => 'meta_tags.name ASC'
+  }
   
   def after_save
     # if you allow editable tag names, you might want before_save instead 
