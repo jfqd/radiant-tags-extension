@@ -44,3 +44,12 @@ Here's a sample results page to get you started;
 	  </r:search:results:each>
 	  </ul>
 	</r:search:results>
+
+== VHost Extension
+
+If you use the VHost-Extension place the following snippet inside of your vhost.yml file:
+
+  MetaTag:
+    id:
+      scope:
+        site_id
