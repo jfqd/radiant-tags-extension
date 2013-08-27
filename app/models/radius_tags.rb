@@ -41,7 +41,7 @@ module RadiusTags
       tag.locals.page = page
       output << tag.expand
     end
-    output.flatten.join('')
+    output.flatten.join
   end
   
   desc %{
@@ -64,7 +64,7 @@ module RadiusTags
       output << tag.expand
       first = false
     end
-    output.flatten.join('')
+    output.flatten.join
   end
   
   tag "if_has_related_by_tags" do |tag|
@@ -140,11 +140,11 @@ module RadiusTags
     results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
     output = "<ul class=\"tag_list\">"
     if tag_cloud.length > 0
-        build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-          output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/#{url_encode(tag)}\" class=\"tag\">#{tag} (#{amount})</a></li>"
-        end
+      build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
+        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/#{url_encode(tag)}\" class=\"tag\">#{tag} (#{amount})</a></li>"
+      end
     else
-        return I18n.t('tags_extension.no_tags_found')
+      return I18n.t('tags_extension.no_tags_found')
     end
     output += "</ul>"
   end
@@ -154,14 +154,14 @@ module RadiusTags
     results_page = tag.attr['results_page'] || Radiant::Config['tags.results_page_url']
     output = []
     tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{results_page}/#{t}\" class=\"tag\">#{t}</a>"}
-    output.join ", "
+    output.flatten.join ", "
   end
   
   desc "List the current page's tagsi as technorati tags. this should be included in the body of a post or in your rss feed"
   tag "tag_list_technorati" do |tag|
     output = []
     tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"http://technorati.com/tag/#{ t.split(" ").join("+")}\" rel=\"tag\">#{t}</a>"}
-    output.join ", "
+    output.flatten.join ", "
   end
   
   tag "tags" do |tag|
@@ -275,7 +275,7 @@ module RadiusTags
         result << tag.expand
       end
     end
-    result.flatten.join('')
+    result.flatten.join
   end
   
   private
@@ -294,10 +294,6 @@ module RadiusTags
     end
   end
 
-  def tag_item_url(name)
-    "#{Radiant::Config['tags.results_page_url']}/#{name}"
-  end
-  
   def find_with_tag_options(tag)
     options = tagged_with_options(tag)
     with_any = tag.attr['with_any'] || false
@@ -312,13 +308,13 @@ module RadiusTags
     
     if with_any
       Page.tagged_with_any(ttag, options).each do |page|
-          next unless (page.ancestors.include?(scope) or page == scope)
-          results << page
+        next unless (page.ancestors.include?(scope) or page == scope)
+        results << page
       end
     else
       Page.tagged_with(ttag, options).each do |page|
-          next unless (page.ancestors.include?(scope) or page == scope)
-          results << page
+        next unless (page.ancestors.include?(scope) or page == scope)
+        results << page
       end
     end
     results
