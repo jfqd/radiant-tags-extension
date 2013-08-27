@@ -301,7 +301,7 @@ module MetaTagsTags
     scope_attr = tag.attr['scope'] || '/'
     results = []
     raise TagError, "`tagged' tag must contain a `with' attribute." unless (tag.attr['with'] || tag.locals.page.class_name = TagSearchPage)
-    ttag = tag.attr['with'] || @request.parameters[:tag]
+    ttag = tag.attr['with'] || @request.parameters[:q]
     
     scope_path = scope_attr == 'current_page' ? @request.request_uri : scope_attr
     scope = Page.find_by_url scope_path
