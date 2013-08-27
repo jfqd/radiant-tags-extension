@@ -104,5 +104,6 @@ class TagSearchPage < Page
       super
     end
   end
+  alias_method :find_by_url, :find_by_path
   
 end
