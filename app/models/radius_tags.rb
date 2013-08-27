@@ -157,13 +157,6 @@ module RadiusTags
     output.flatten.join ", "
   end
   
-  desc "List the current page's tagsi as technorati tags. this should be included in the body of a post or in your rss feed"
-  tag "tag_list_technorati" do |tag|
-    output = []
-    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"http://technorati.com/tag/#{ t.split(" ").join("+")}\" rel=\"tag\">#{t}</a>"}
-    output.flatten.join ", "
-  end
-  
   tag "tags" do |tag|
     tag.expand
   end
