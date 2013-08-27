@@ -57,7 +57,7 @@ class TagSearchPage < Page
     tags = tags.sort_by(&tag.attr['sort_by'].to_sym)  if tag.attr['sort_by']
     tags = tags.reverse                               if tag.attr['order'].to_s =~ /desc/i
     
-    returning String.new do |content|
+    String.new.tap String.new do |content|
       tags.each do |page|
         tag.locals.page = page
         content << tag.expand
