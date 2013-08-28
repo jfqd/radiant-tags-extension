@@ -29,7 +29,7 @@ config.gem 'radiant-tags-extension'
 	 If you want to change this location, edit the routes file and the corresponding locale file(s).
 
 Done!
-Here's a sample results page to get you started;
+Here's a sample results page to get you started:
 	
 	<r:search:empty>
 	  <h2>I couldn't find anything tagged with "<r:search:query/>".</h2>
@@ -44,6 +44,24 @@ Here's a sample results page to get you started;
 	  </r:search:results:each>
 	  </ul>
 	</r:search:results>
+	
+If you would like to show a tag-list on the sidebar this take this sample:
+
+  <r:tag_cloud_list scope="/blog" />
+  
+Adding a pages tag-list and related pages:
+
+<r:if_tagged>
+<p>Categories: <r:tag_list /></p>
+<p>
+  <h2>Other pages with these tags</h2>
+  <ul>
+  <r:related_by_tags limit="5">
+    <li><r:link /></li>
+  </r:related_by_tags>
+  </ul>
+</p>
+</r:if_tagged>
 
 == Compatibility
 
