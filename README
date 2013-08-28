@@ -12,6 +12,8 @@ This extension depends on the has_many_polymorphs plugin (included in vendor/plu
 If you're still on Radiant pre-0.6.7, then the shards_extension should be installed and loaded first.
 You can change the load order of extensions in config/environment.rb (see http://wiki.radiantcms.org/Using_the_Shards_Extension).
 
+This fork of the extension requires also the Globalize2 extension to be loaded first.
+
 == Installation
 
 === Using RubyGems
