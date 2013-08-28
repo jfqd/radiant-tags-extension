@@ -11,9 +11,9 @@ class TagsExtension < Radiant::Extension
 
   def activate
     raise "The Shards extension is required and must be loaded first!" unless defined?(admin.page)
-    if Radiant::Config.table_exists?
-      Radiant::Config['tags.complex_strings'] = 'true' unless Radiant::Config['tags.complex_strings']
-    end
+    raise "The Globalize2Extension extension is required and must be loaded first!" unless defined?(Globalize2Extension)
+    
+    Radiant::Config['tags.complex_strings'] ||= 'true' if Radiant::Config.table_exists?
     Page.send :include, MetaTagsTags
     begin
       MetaTag

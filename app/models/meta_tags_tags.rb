@@ -31,7 +31,7 @@ module MetaTagsTags
     <pre><code><r:tagged with="shoes diesel" [scope="/fashion/cult-update"] [with_any="true"] [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]>...</r:tagged></code></pre>
   }
   tag "tagged" do |tag|
-    unless tag.locals.tagged_results.nil? # We're inside an r:if_tagged, so results are already available;
+    if tag.locals.tagged_results.present? # We're inside an r:if_tagged, so results are already available;
       results = tag.locals.tagged_results
     else
       results = find_with_tag_options(tag)
@@ -55,16 +55,17 @@ module MetaTagsTags
     tag.attr["with_any"] = true
     tag.attr["exclude_id"] = tag.locals.page.id
     results = find_with_tag_options(tag)
-    return false if results.size < 1
-    output = []
-    first = true
-    results.each do |page|
-      tag.locals.page = page
-      tag.locals.first = first
-      output << tag.expand
-      first = false
+    if results.size >= 1
+      output = []
+      first = true
+      results.each do |page|
+        tag.locals.page = page
+        tag.locals.first = first
+        output << tag.expand
+        first = false
+      end
+      output.flatten.join
     end
-    output.flatten.join
   end
   
   tag "if_has_related_by_tags" do |tag|
@@ -88,7 +89,7 @@ module MetaTagsTags
     <pre><code><r:tag_cloud [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
   }
   tag "tag_cloud" do |tag|
-    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 5).sort
+    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 5, :conditions => {:locale => I18n.locale.to_s}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     results_page = tag.attr['results_page'] || tags_results_page
@@ -111,7 +112,7 @@ module MetaTagsTags
     <pre><code><r:tag_cloud_div [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
   }
   tag "tag_cloud_div" do |tag|
-    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 10).sort
+    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 10, :conditions => {:locale => I18n.locale.to_s}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     results_page = tag.attr['results_page'] || tags_results_page
@@ -134,7 +135,7 @@ module MetaTagsTags
     <pre><code><r:tag_cloud_list [results_page="/some/url"] [scope="/some/url"]/></code></pre>
   }
   tag "tag_cloud_list" do |tag|
-    tag_cloud = MetaTag.cloud({:limit => 100}).sort
+    tag_cloud = MetaTag.cloud(:limit => 100, :conditions => {:locale => I18n.locale.to_s}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     results_page = tag.attr['results_page'] || tags_results_page
@@ -222,7 +223,7 @@ module MetaTagsTags
     order = (tag.attr['order'] || 'asc').strip
     limit = tag.attr['limit'] || '5'
     begin
-      all_tags = MetaTag.cloud(:limit => limit, :order => order, :by => by)
+      all_tags = MetaTag.cloud(:limit => limit, :order => order, :by => by, :conditions => {:locale => I18n.locale.to_s})
     rescue => e
       raise TagError, "all_tags:each: "+e.message
     end
@@ -300,21 +301,23 @@ module MetaTagsTags
     with_any = tag.attr['with_any'] || false
     scope_attr = tag.attr['scope'] || '/'
     results = []
-    raise TagError, "`tagged' tag must contain a `with' attribute." unless (tag.attr['with'] || tag.locals.page.class_name = TagSearchPage)
+    raise TagError, "`tagged' tag must contain a `with' attribute." if (tag.attr['with'].blank? && tag.locals.page.class_name != TagSearchPage)
     ttag = tag.attr['with'] || @request.parameters[:q]
-    
     scope_path = scope_attr == 'current_page' ? @request.request_uri : scope_attr
-    scope = Page.find_by_url scope_path
-    return "The scope attribute must be a valid url to an existing page." if scope.nil? || scope.class_name.eql?('FileNotFoundPage')
-    
+    scope_page = if scope_path == '/'
+      Page.find_by_parent_id(nil)
+    else
+      Page.find_by_url(scope_path)
+    end
+    raise TagError.new("The scope attribute must be a valid url to an existing page.") if scope_page.nil? || scope_page.class_name.eql?('FileNotFoundPage')
     if with_any
       Page.tagged_with_any(ttag, options).each do |page|
-        next unless (page.ancestors.include?(scope) or page == scope)
+        next unless (page.ancestors.include?(scope_page) or page == scope_page)
         results << page
       end
     else
       Page.tagged_with(ttag, options).each do |page|
-        next unless (page.ancestors.include?(scope) or page == scope)
+        next unless (page.ancestors.include?(scope_page) or page == scope_page)
         results << page
       end
     end
@@ -357,7 +360,7 @@ module MetaTagsTags
     unless status == 'all'
       stat = Status[status]
       unless stat.nil?
-        options[:conditions] = ["(virtual = ?) and (status_id = ?) #{exclude} and (published_at <= ?)", false, stat.id, Time.current]
+        options[:conditions] = ["(virtual = ?) AND (status_id = ?) #{exclude} AND (published_at <= ?)", false, stat.id, Time.current]
       else
         raise TagError.new(%{`status' attribute of `each' tag must be set to a valid status})
       end

@@ -11,7 +11,7 @@
       separatorKeyCode: 186
     });
     
-    var tags = <%= MetaTag.all.map {|tag| {:caption => tag.name, :value => tag.name} }.to_json %>;
+    var tags = <%= MetaTag.with_locale.all.map {|tag| {:caption => tag.name, :value => tag.name} }.to_json %>;
     tags.each(function(t) { taglist.autoFeed(t) });
   });
 <% end %>

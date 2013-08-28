@@ -1,11 +1,12 @@
+# encoding: utf-8
 class MetaTag < ActiveRecord::Base
 
   if Radiant::Config['tags.complex_strings'] == 'true'
     delim = ";"
-    re_format = /^[a-zA-Z0-9,\_\-\s\/()'.&]+$/
+    re_format = /^[[:alpha:]0-9äöüÄÖÜß,\_\-\s\/()'.&]+$/
   else
     delim = " "
-    re_format = /^[a-zA-Z0-9\_\-]+$/
+    re_format = /^[[:alpha:]0-9äöüÄÖÜß\_\-]+$/
   end
   DELIMITER = delim
     # how to separate tags in strings (you may
@@ -14,10 +15,10 @@ class MetaTag < ActiveRecord::Base
 
   # if speed becomes an issue, you could remove these validations 
   # and rescue the AR index errors instead
-  validates_presence_of :name
-  validates_uniqueness_of :name, :case_sensitive => false
-  validates_format_of :name, :with => re_format, 
-    :message => "can not contain special characters"
+  validates_presence_of   :name
+  validates_uniqueness_of :name, :scope => :locale, :case_sensitive => false
+  validates_format_of     :name, :with => re_format, 
+                          :message => "can not contain special characters"
   
   begin
     has_many_polymorphs :taggables, 
@@ -29,12 +30,7 @@ class MetaTag < ActiveRecord::Base
     # ugly hack to get migrations pass
   end
   
-  named_scope :with_count, {
-    :select => "meta_tags.*, count(tt.id) AS use_count", 
-    :joins => "INNER JOIN taggings as tt ON tt.meta_tag_id = meta_tags.id", 
-    :group => "meta_tags.id",
-    :order => 'meta_tags.name ASC'
-  }
+  named_scope :with_locale, lambda { {:conditions => {:locale => I18n.locale.to_s} } }
   
   def after_save
     # if you allow editable tag names, you might want before_save instead 
@@ -43,7 +39,7 @@ class MetaTag < ActiveRecord::Base
  
   class << self
     def find_or_create_by_name!(name)
-      find_by_name(name) || create!(:name => name)
+      find_by_name_and_locale(name, I18n.locale.to_s) || create!(:name => name, :locale => I18n.locale.to_s)
     end
 
     def cloud(options = {})

@@ -11,11 +11,13 @@ TaggingMethods = Proc.new do
     return self if @new_tags == tag_list
     
     # tags have changed, so we delete all taggings and re-create to preserve order
-    taggings.clear
+    # back hack to only delete the taggings by the current locale
+    _taggings = Tagging.find_by_sql(["select * from taggings where taggable_id = ? AND taggable_type = ? AND locale = ?", self.id, self.class.name, I18n.locale.to_s])
+    _taggings.each { |t| t.destroy }
     
     @new_tags.to_s.split(MetaTag::DELIMITER).each do |tag|
       begin
-        tag = MetaTag.find_or_initialize_by_name(tag.strip.squeeze(" "))
+        tag = MetaTag.find_or_initialize_by_name_and_locale(tag.strip.squeeze(" "), I18n.locale.to_s)
         meta_tags << tag unless meta_tags.include?(tag)
       rescue ActiveRecord::RecordInvalid => e
         errors.add_to_base("Tags can not contain special characters")
@@ -35,7 +37,7 @@ TaggingMethods = Proc.new do
   def ordered_meta_tags
     # HACK: need to order by tagging to preserve creation order, otherwise
     # list gets ordered by tag.id
-    meta_tags.find(:all, :order => 'taggings.id')
+    meta_tags.find(:all, :conditions => {:locale => I18n.locale.to_s}, :order => 'taggings.id')
   end
 
   def tag_list
@@ -69,6 +71,7 @@ TaggingMethods = Proc.new do
      
      sql << "AND (#{sanitize_sql(['meta_tags.name IN (?)', tag_list.map{|name| name.strip.squeeze(' ')}])}) "
      sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
+     sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
       
      columns = column_names.map do |column| 
        "#{table_name}.#{column}"
@@ -81,7 +84,6 @@ TaggingMethods = Proc.new do
      add_limit!(sql, options, scope)
      add_lock!(sql, options, scope)
 
-   
      find_by_sql(sql)
    end
    
@@ -108,6 +110,7 @@ TaggingMethods = Proc.new do
               arr << sanitize_sql(["meta_tags.name = ?", name.strip.squeeze(' ')])
             end.join(" OR ")
      sql << ") "
+     sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
      
      
      sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
