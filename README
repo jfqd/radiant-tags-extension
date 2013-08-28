@@ -54,7 +54,7 @@ If you would like to show a tag-list on the sidebar this take this sample:
 Adding a pages tag-list and related pages:
 
 <r:if_tagged>
-<p>Categories: <r:tag_list /></p>
+<p>Tags: <r:tag_list /></p>
 <p>
   <h2>Other pages with these tags</h2>
   <ul>
