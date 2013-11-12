@@ -83,7 +83,7 @@ module MetaTagsTags
   
   desc %{
     Render a Tag cloud
-    The results_page attribute will default to #{tags_results_page}
+    The results_page attribute will default to (/:locale)/category/:tag/
     
     *Usage:*
     <pre><code><r:tag_cloud [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
@@ -106,7 +106,7 @@ module MetaTagsTags
 
   desc %{
     Render a Tag cloud with div-tags
-    The results_page attribute will default to #{tags_results_page}
+    The results_page attribute will default to (/:locale)/category/:tag/
     
     *Usage:*
     <pre><code><r:tag_cloud_div [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
@@ -129,7 +129,7 @@ module MetaTagsTags
  
   desc %{
     Render a Tag list, more for 'categories'-ish usage, i.e.: Cats (2) Logs (1) ...
-    The results_page attribute will default to #{tags_results_page}
+    The results_page attribute will default to (/:locale)/category/:tag/
     
     *Usage:*
     <pre><code><r:tag_cloud_list [results_page="/some/url"] [scope="/some/url"]/></code></pre>
