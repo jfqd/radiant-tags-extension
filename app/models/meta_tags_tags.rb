@@ -95,11 +95,11 @@ module MetaTagsTags
     results_page = tag.attr['results_page'] || tags_results_page
     output = "<ol class=\"tag_cloud\">"
     if tag_cloud.length > 0
-    	build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-    		output += "<li class=\"#{cloud_class}\"><span>#{pluralize(amount, 'page is', 'pages are')} tagged with </span><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag}</a></li>"
-    	end
+      build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |_tag, cloud_class, amount|
+        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{url_encode(_tag)}\" class=\"tag\">#{_tag}</a></li>"
+      end
     else
-    	return I18n.t('tags_extension.no_tags_found')
+      return I18n.t('tags_extension.no_tags_found')
     end
     output += "</ol>"
   end
@@ -118,11 +118,11 @@ module MetaTagsTags
     results_page = tag.attr['results_page'] || tags_results_page
     output = "<div class=\"tag_cloud\">"
     if tag_cloud.length > 0
-    	build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-    		output += "<div class=\"#{cloud_class}\"><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag}</a></div>\n"
-    	end
+      build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |_tag, cloud_class, amount|
+        output += "<div class=\"#{cloud_class}\"><a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{url_encode(_tag)}\" class=\"tag\">#{_tag}</a></div>\n"
+      end
     else
-    	return I18n.t('tags_extension.no_tags_found')
+      return I18n.t('tags_extension.no_tags_found')
     end
     output += "</div>"
   end
@@ -141,8 +141,8 @@ module MetaTagsTags
     results_page = tag.attr['results_page'] || tags_results_page
     output = "<ul class=\"tag_list\">"
     if tag_cloud.length > 0
-      build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |tag, cloud_class, amount|
-        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/?q=#{url_encode(tag)}\" class=\"tag\">#{tag} (#{amount})</a></li>"
+      build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |_tag, cloud_class, amount|
+        output += "<li class=\"#{cloud_class}\"><a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{url_encode(_tag)}\" class=\"tag\">#{_tag} <span>(#{amount})</span></a></li>"
       end
     else
       return I18n.t('tags_extension.no_tags_found')
@@ -154,7 +154,7 @@ module MetaTagsTags
   tag "tag_list" do |tag|
     results_page = tag.attr['results_page'] || tags_results_page
     output = []
-    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{results_page}/?q=#{t}\" class=\"tag\">#{t}</a>"}
+    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{t}\" class=\"tag\">#{t}</a>"}
     output.flatten.join ", "
   end
   
@@ -188,7 +188,7 @@ module MetaTagsTags
   tag "tags:each:link" do |tag|
     results_page = tag.attr['results_page'] || tags_results_page
     name = tag.locals.meta_tag.name
-    return "<a href=\"#{results_page}/?q=#{url_encode(name)}\" class=\"tag\">#{name}</a>"
+    return "<a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{url_encode(name)}\" class=\"tag\">#{name}</a>"
   end
   
   tag 'tags:each:if_first' do |tag|
@@ -242,7 +242,7 @@ module MetaTagsTags
   tag "all_tags:each:link" do |tag|
     results_page = tag.attr['results_page'] || tags_results_page
     name = tag.locals.meta_tag.name
-    "<a href=\"#{results_page}/?q=#{url_encode(name)}\" class=\"tag\">#{name}</a>"
+    "<a href=\"#{results_page}/#{ '?q=' if tag.attr['results_page'].present? }#{ url_encode(name) }\" class=\"tag\">#{name}</a>"
   end
 
   tag "all_tags:each:popularity" do |tag|
@@ -276,9 +276,9 @@ module MetaTagsTags
   
   def tags_results_page
     if defined?(Globalize2Extension) && current_site.package_with_globalized_support?
-      '/:locale/tag/'
+      '/:locale/tag'
     else
-      '/tag/'
+      '/tag'
     end
   end
   
@@ -297,7 +297,7 @@ module MetaTagsTags
   end
   
   def tag_item_url(tag)
-    "#{ tags_results_page }/#{tag}"
+    "#{ tags_results_page }/#{ tag }"
   end
 
   def find_with_tag_options(tag)
