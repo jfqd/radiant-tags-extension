@@ -7,8 +7,6 @@ class TagsExtension < Radiant::Extension
   description "This extension enhances the page model with tagging capabilities, tagging as in \"2.0\" and tagclouds."
   url "https://github.com/jfqd/radiant-tags-extension/"
   
-  DEFAULT_RESULTS_URL = '/search/tags'
-
   def activate
     raise "The Shards extension is required and must be loaded first!" unless defined?(admin.page)
     raise "The Globalize2Extension extension is required and must be loaded first!" unless defined?(Globalize2Extension)
