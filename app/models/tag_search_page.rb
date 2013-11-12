@@ -89,7 +89,8 @@ class TagSearchPage < Page
   end
   
   def render
-    self.requested_tag = @request.parameters[:q] if @request.parameters[:q]
+    self.requested_tag = @request.parameters[:q] if @request.parameters[:q]     # query paramter
+    self.requested_tag = @request.parameters[:tag] if @request.parameters[:tag] # tags seo url
     self.title = "#{self.title} #{requested_tag}" if requested_tag
     
     super

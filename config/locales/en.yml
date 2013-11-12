@@ -1,8 +1,5 @@
 ---
 en:
-  named_routes_path:
-    "/category/:tag/": /category/:tag/
-    "/:locale/category/:tag/": /:locale/category/:tag/
   tags_extension:
     no_tags_found: "<p class='no-tags-found'>No tags found.</p>"
     tags: Tags
