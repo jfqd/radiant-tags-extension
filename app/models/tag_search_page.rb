@@ -47,7 +47,7 @@ class TagSearchPage < Page
     end
   end
 
-  desc %{    <r:search:results:each [sort_by="id"] [order="asc"]/>
+  desc %{    <pre><code><r:search:results:each [sort_by="id"] [order="asc"]/></code></pre>
     Renders the contained block for each result page.  The context
     inside the tag refers to the found page. The optional sort_by and order attributes
     specify how the results are sorted}
@@ -65,8 +65,8 @@ class TagSearchPage < Page
     end
   end
   
-  desc %{    <r:truncate_and_strip [length="100"] />
-    Truncates and strips all HTML tags from the content of the contained block.  
+  desc %{    <pre><code><r:truncate_and_strip [length="100"] /></code></pre>
+    Truncates and strips all HTML tags from the content of the contained block.
     Useful for displaying a snippet of a found page.  The optional `length' attribute
     specifies how many characters to truncate to.}
   tag 'truncate_and_strip' do |tag|

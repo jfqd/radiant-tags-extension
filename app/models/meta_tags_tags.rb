@@ -5,8 +5,8 @@ module MetaTagsTags
   class TagError < StandardError; end
   
   desc %{
-    Expands if a <pre><r:tagged with="" /></pre> call would return items. Takes the same options as the 'tagged' tag.
-    The <pre><r:unless_tagged with="" /></pre> is also available.
+    Expands if a <pre><code><r:tagged with="" /></code></pre> call would return items. Takes the same options as the 'tagged' tag.
+    The <pre><code><r:unless_tagged with="" /></code></pre> is also available.
   }
   tag "if_tagged" do |tag|
     if tag.attr["with"]
