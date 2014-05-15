@@ -65,6 +65,10 @@ class TagSearchPage < Page
     end
   end
   
+  tag 'search:results:id' do |tag|
+    tag.locals.page.id.to_s rescue ''
+  end
+  
   desc %{    <pre><code><r:truncate_and_strip [length="100"] /></code></pre>
     Truncates and strips all HTML tags from the content of the contained block.
     Useful for displaying a snippet of a found page.  The optional `length' attribute
