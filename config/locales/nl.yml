@@ -1,9 +1,9 @@
 ---
 nl:
   named_routes_path:
-    "/:locale/tag/:tag/": /:locale/tag/:tag/
-    "/tag/:tag/": /tag/:tag/
+    "/:locale/tag/:tag/": "/:locale/tag/:tag/"
+    "/tag/:tag/": "/tag/:tag/"
   tags_extension:
     no_tags_found: "<p class='no-tags-found'>Geen tags gevonden.</p>"
     tags: Tags
-    type_a_tag: "Onderscheid tags met ;"
+    type_a_tag: Onderscheid tags met ;

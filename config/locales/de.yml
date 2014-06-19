@@ -1,9 +1,9 @@
 ---
 de:
   named_routes_path:
-    "/:locale/kategorie/:tag/": /:locale/tag/:tag/
-    "/kategorie/:tag/": /tag/:tag/
+    "/:locale/kategorie/:tag/": "/:locale/tag/:tag/"
+    "/kategorie/:tag/": "/tag/:tag/"
   tags_extension:
     no_tags_found: "<p class='no-tags-found'>Es wurden keine Kategorien gefunden.</p>"
-    tags: "Kategorien"
-    type_a_tag: "Kategorien durch ein Semikolon (;) trennen"
+    tags: Kategorien
+    type_a_tag: Kategorien durch ein Semikolon (;) trennen
