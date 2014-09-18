@@ -7,8 +7,12 @@ TaggingMethods = Proc.new do
   
   def save_with_tags!
     self.save_without_tags!
-    # just skip the whole method if the tags string hasn't changed
-    return self if @new_tags == tag_list
+    
+    # just skip the whole method if @new_tags is
+    # empty or the tags string hasn't changed.
+    # @new_tags might be empty or nil while re-
+    # ordering pages!
+    return self if @new_tags.blank? || @new_tags == tag_list
     
     # tags have changed, so we delete all taggings and re-create to preserve order
     # back hack to only delete the taggings by the current locale
