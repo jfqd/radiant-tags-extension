@@ -16,7 +16,7 @@ class MetaTag < ActiveRecord::Base
   # if speed becomes an issue, you could remove these validations 
   # and rescue the AR index errors instead
   validates_presence_of   :name
-  validates_uniqueness_of :name, :scope => :locale, :case_sensitive => false
+  validates_uniqueness_of :name, :scope => [:locale, :site_id], :case_sensitive => false
   validates_format_of     :name, :with => re_format, 
                           :message => "can not contain special characters"
   
