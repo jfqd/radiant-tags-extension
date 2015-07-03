@@ -276,11 +276,10 @@ module MetaTagsTags
   end
   
   def results_page(attr, tag)
-    results_page = attr['results_page'] || tags_results_page
     if attr['results_page'].present?
-      "#{results_page}/?q=#{url_encode(tag)}"
+      "#{attr['results_page']}/?q=#{url_encode(tag)}"
     else
-      "#{results_page}/#{url_encode(tag)}/"
+      "#{tags_results_page}/#{url_encode(tag)}/"
     end
   end
   
