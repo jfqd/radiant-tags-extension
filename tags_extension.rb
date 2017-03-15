@@ -1,6 +1,7 @@
 require_dependency 'application_controller'
 require File.dirname(__FILE__)+'/lib/tagging_methods'
 require 'radiant-tags-extension'
+require 'has_many_polymorphs'
 
 class TagsExtension < Radiant::Extension
   version RadiantTagsExtension::VERSION
