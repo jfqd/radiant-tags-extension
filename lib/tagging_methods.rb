@@ -12,10 +12,10 @@ TaggingMethods = Proc.new do
     # nil or the tags string hasn't changed.
     # @new_tags will be nil on reordering pages!
     return self if @new_tags.nil? || @new_tags == tag_list
-    
     # tags have changed, so we delete all taggings and re-create to preserve order
+    class_name = (self.class.name == 'CollectionPage' ? 'Page' : self.class.name) # fix class
     # back hack to only delete the taggings by the current locale
-    _taggings = Tagging.find_by_sql(["select * from taggings where taggable_id = ? AND taggable_type = ? AND locale = ?", self.id, self.class.name, I18n.locale.to_s])
+    _taggings = Tagging.find_by_sql(["select * from taggings where taggable_id = ? AND taggable_type = ? AND locale = ?", self.id, class_name, I18n.locale.to_s])
     _taggings.each { |t| t.destroy }
     
     @new_tags.to_s.split(MetaTag::DELIMITER).each do |tag|
