@@ -12,8 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = RadiantTagsExtension::SUMMARY
   s.description = RadiantTagsExtension::DESCRIPTION
   
-  # TODO: add gem dependency on this instead of bundling it
-  # s.add_dependency 'has_many_polymorphs'
+  s.add_dependency 'has_many_polymorphs'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features,vendor/plugins/*/test,vendor/plugins/*/spec,vendor/plugins/*/features}/*`.split("\n")
