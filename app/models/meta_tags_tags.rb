@@ -147,10 +147,20 @@ module MetaTagsTags
     output += "</ul>"
   end
  
-  desc "List the current page's tags"
+  desc %{
+    List the current page's tags.
+    The results_page attribute will default to (/:locale)/tag/:tag/
+    exclude may contain Tags to exclude from the list seperated by semicolon.
+    
+    *Usage:*
+    <pre><code><r:tag_list [results_page="/some/url"] [exclude="This Tag; That Tag"]/></code></pre>
+  }
   tag "tag_list" do |tag|
+    exclude = tag.attr["exclude"].split(';').map(&:strip)
     output = []
-    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each {|t| output << "<a href=\"#{ results_page(tag.attr, t) }\" class=\"tag\">#{t}</a>"}
+    tag.locals.page.tag_list.split(MetaTag::DELIMITER).each do |t|
+      output << "<a href=\"#{ results_page(tag.attr, t) }\" class=\"tag\">#{t}</a>" unless exclude.include?(t)
+    end
     output.flatten.join ", "
   end
   
