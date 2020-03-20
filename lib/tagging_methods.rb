@@ -76,7 +76,7 @@ TaggingMethods = Proc.new do
      sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
      sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
       
-     columns = column_names.map do |column| 
+     columns = column_names.map do |column|
        "#{table_name}.#{column}"
      end.join(", ")
       
@@ -110,15 +110,13 @@ TaggingMethods = Proc.new do
      
      sql << "AND ("
      sql << tag_list.inject([]) do |arr,name|
-              arr << sanitize_sql(["meta_tags.name = ?", name.strip.squeeze(' ')])
-            end.join(" OR ")
+       arr << sanitize_sql(["meta_tags.name = ?", name.strip.squeeze(' ')])
+     end.join(" OR ")
      sql << ") "
      sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
-     
-     
      sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
       
-     columns = column_names.map do |column| 
+     columns = column_names.map do |column|
        "#{table_name}.#{column}"
      end.join(", ")
       

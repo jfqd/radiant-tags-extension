@@ -21,9 +21,9 @@ class MetaTag < ActiveRecord::Base
                           :message => "can not contain special characters"
   
   begin
-    has_many_polymorphs :taggables, 
-      :from => [:pages], 
-      :through => :taggings, 
+    has_many_polymorphs :taggables,
+      :from => [:pages],
+      :through => :taggings,
       :dependent => :destroy,
       :skip_duplicates => false
   rescue
