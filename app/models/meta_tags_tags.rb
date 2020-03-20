@@ -128,18 +128,20 @@ module MetaTagsTags
   desc %{
     Render a Tag list, more for 'categories'-ish usage, i.e.: Cats (2) Logs (1) ...
     The results_page attribute will default to (/:locale)/tag/:tag/
+    exclude may contain Tags to exclude from the list seperated by semicolon.
     
     *Usage:*
-    <pre><code><r:tag_cloud_list [results_page="/some/url"] [scope="/some/url"]/></code></pre>
+    <pre><code><r:tag_cloud_list [results_page="/some/url"] [scope="/some/url"] [exclude="This Tag; That Tag"]/></code></pre>
   }
   tag "tag_cloud_list" do |tag|
+    exclude = tag.attr["exclude"].split(';').map(&:strip) rescue []
     tag_cloud = MetaTag.cloud(:limit => 100, :conditions => {:locale => I18n.locale.to_s}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     output = "<ul class=\"tag_list\">"
     if tag_cloud.length > 0
       build_tag_cloud(tag_cloud, %w(size1 size2 size3 size4 size5 size6 size7 size8 size9)) do |_tag, cloud_class, amount|
-        output += "<li class=\"#{cloud_class}\"><a href=\"#{ results_page(tag.attr, _tag) }\" class=\"tag\">#{_tag} <span>(#{amount})</span></a></li>"
+        output += "<li class=\"#{cloud_class}\"><a href=\"#{ results_page(tag.attr, _tag) }\" class=\"tag\">#{_tag} <span>(#{amount})</span></a></li>" unless exclude.include?(_tag)
       end
     else
       return I18n.t('tags_extension.no_tags_found')
@@ -156,7 +158,7 @@ module MetaTagsTags
     <pre><code><r:tag_list [results_page="/some/url"] [exclude="This Tag; That Tag"]/></code></pre>
   }
   tag "tag_list" do |tag|
-    exclude = tag.attr["exclude"].split(';').map(&:strip)
+    exclude = tag.attr["exclude"].split(';').map(&:strip) rescue []
     output = []
     tag.locals.page.tag_list.split(MetaTag::DELIMITER).each do |t|
       output << "<a href=\"#{ results_page(tag.attr, t) }\" class=\"tag\">#{t}</a>" unless exclude.include?(t)
