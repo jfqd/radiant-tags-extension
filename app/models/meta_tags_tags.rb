@@ -5,13 +5,21 @@ module MetaTagsTags
   class TagError < StandardError; end
   
   desc %{
-    Expands if a <pre><code><r:tagged with="" /></code></pre> call would return items. Takes the same options as the 'tagged' tag.
+    Expands if a <pre><code><r:if_tagged with="" [current_page="true"]>...</if_tagged></code></pre> call would return items. Takes the same options as the 'tagged' tag.
+    
+    Set @current_page="true"@ to expand the block only if the current-page has the required tag defined by the @with@ parameter!
+
     The <pre><code><r:unless_tagged with="" /></code></pre> is also available.
   }
   tag "if_tagged" do |tag|
     if tag.attr["with"]
       tag.locals.tagged_results = find_with_tag_options(tag)
-      tag.expand unless tag.locals.tagged_results.empty?
+      if tag.attr["current_page"] == "true"
+        tag.expand if tag.locals.tagged_results.present? &&
+                        tag.locals.tagged_results.include?(tag.locals.page)
+      else
+        tag.expand unless tag.locals.tagged_results.empty?
+      end
     else
       tag.expand unless tag.locals.page.tag_list.empty?
     end
