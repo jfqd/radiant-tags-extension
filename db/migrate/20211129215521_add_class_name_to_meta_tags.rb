@@ -1,4 +1,4 @@
-class AddClassNameeToMetaTags < ActiveRecord::Migration
+class AddClassNameToMetaTags < ActiveRecord::Migration
   def self.up
     add_column     :meta_tags, :class_name,  :string
     
