@@ -38,7 +38,8 @@ class MetaTag < ActiveRecord::Base
     # ugly hack to get migrations pass
   end
   
-  named_scope :with_locale, lambda { {:conditions => {:locale => I18n.locale.to_s} } }
+  named_scope :with_locale, lambda { { conditions: { locale: I18n.locale.to_s} } }
+  named_scope :and_class_name, lambda{ |class_name| { conditions: ["class_name = ?", class_name] } }
   
   def after_save
     # if you allow editable tag names, you might want before_save instead 
