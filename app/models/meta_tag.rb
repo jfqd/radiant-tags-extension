@@ -21,11 +21,19 @@ class MetaTag < ActiveRecord::Base
                           :message => "can not contain special characters"
   
   begin
-    has_many_polymorphs :taggables,
-      :from => [:pages],
-      :through => :taggings,
-      :dependent => :destroy,
-      :skip_duplicates => false
+    if defined?(PaperclippedExtension)
+      has_many_polymorphs :taggables,
+        :from => [:pages, :assets],
+        :through => :taggings,
+        :dependent => :destroy,
+        :skip_duplicates => false
+    else
+      has_many_polymorphs :taggables,
+        :from => [:pages],
+        :through => :taggings,
+        :dependent => :destroy,
+        :skip_duplicates => false
+    end
   rescue
     # ugly hack to get migrations pass
   end

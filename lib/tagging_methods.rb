@@ -20,7 +20,7 @@ TaggingMethods = Proc.new do
     
     @new_tags.to_s.split(MetaTag::DELIMITER).each do |tag|
       begin
-        tag = MetaTag.find_or_initialize_by_name_and_locale(tag.strip.squeeze(" "), I18n.locale.to_s)
+        tag = MetaTag.find_or_initialize_by_name_and_locale_and_class_name(tag.strip.squeeze(" "), I18n.locale.to_s, class_name)
         meta_tags << tag unless meta_tags.include?(tag)
       rescue ActiveRecord::RecordInvalid => e
         errors.add_to_base("Tags can not contain special characters")
