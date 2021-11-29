@@ -1,5 +1,5 @@
 module RadiantTagsExtension
-  VERSION = '1.6.36'
+  VERSION = '1.6.37'
   AUTHORS = ['Benny Degezelle']
   EMAIL = ['benny@gorilla-webdesign.be']
   HOMEPAGE = 'https://github.com/jfqd/radiant-tags-extension'
