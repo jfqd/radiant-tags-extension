@@ -97,7 +97,7 @@ module MetaTagsTags
     <pre><code><r:tag_cloud [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
   }
   tag "tag_cloud" do |tag|
-    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 5, :conditions => {:locale => I18n.locale.to_s}).sort
+    tag_cloud = MetaTag.cloud(limit: (tag.attr['limit'] || 5), conditions: {locale: I18n.locale.to_s, class_name: "Page"}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     output = "<ol class=\"tag_cloud\">"
@@ -119,7 +119,7 @@ module MetaTagsTags
     <pre><code><r:tag_cloud_div [limit="number"] [results_page="/some/url"] [scope="/some/url"]/></code></pre>
   }
   tag "tag_cloud_div" do |tag|
-    tag_cloud = MetaTag.cloud(:limit => tag.attr['limit'] || 10, :conditions => {:locale => I18n.locale.to_s}).sort
+    tag_cloud = MetaTag.cloud(limit: (tag.attr['limit'] || 10), conditions: {locale: I18n.locale.to_s, class_name: "Page"}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     output = "<div class=\"tag_cloud\">"
@@ -143,7 +143,7 @@ module MetaTagsTags
   }
   tag "tag_cloud_list" do |tag|
     exclude = tag.attr["exclude"].split(';').map(&:strip) rescue []
-    tag_cloud = MetaTag.cloud(:limit => 100, :conditions => {:locale => I18n.locale.to_s}).sort
+    tag_cloud = MetaTag.cloud(limit: 100, conditions: {locale: I18n.locale.to_s, class_name: "Page"}).sort
     tag_cloud = filter_tags_to_url_scope(tag_cloud, tag.attr['scope']) unless tag.attr['scope'].nil?
     
     output = "<ul class=\"tag_list\">"
@@ -238,7 +238,7 @@ module MetaTagsTags
     order = (tag.attr['order'] || 'asc').strip
     limit = tag.attr['limit'] || '5'
     begin
-      all_tags = MetaTag.cloud(:limit => limit, :order => order, :by => by, :conditions => {:locale => I18n.locale.to_s})
+      all_tags = MetaTag.cloud(limit: limit, order: order, by: by, conditions: {locale: I18n.locale.to_s, class_name: "Page"})
     rescue => e
       raise TagError, "all_tags:each: "+e.message
     end
