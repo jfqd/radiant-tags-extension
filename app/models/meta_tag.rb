@@ -48,11 +48,11 @@ class MetaTag < ActiveRecord::Base
  
   class << self
     def find_or_create_by_name!(name)
-      find_by_name_and_locale(name, I18n.locale.to_s) || create!(:name => name, :locale => I18n.locale.to_s)
+      find_by_name_and_locale(name, I18n.locale.to_s) || create!(name: name, locale: I18n.locale.to_s)
     end
 
     def cloud(options = {})
-      options = {:by => 'popularity', :order => 'asc', :limit => 5}.merge(options)
+      options = {by: 'popularity', order: 'asc', limit: 5}.merge(options)
       validate_by options[:by]
       validate_order options[:order]
       all(
