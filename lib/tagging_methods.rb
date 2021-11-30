@@ -70,7 +70,7 @@ TaggingMethods = Proc.new do
      sql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
      sql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
      sql << "AND taggings.meta_tag_id = meta_tags.id "
-     sql << "AND pages.site_id = #{current_site.id} " if self.respond_to?(:current_site)
+     sql << "AND #{self.table_name}.site_id = #{current_site.id} " if self.respond_to?(:current_site)
      
      sql << "AND (#{sanitize_sql(['meta_tags.name IN (?)', tag_list.map{|name| name.strip.squeeze(' ')}])}) "
      sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
@@ -106,7 +106,7 @@ TaggingMethods = Proc.new do
      sql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
      sql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
      sql << "AND taggings.meta_tag_id = meta_tags.id "
-     sql << "AND pages.site_id = #{current_site.id} " if self.respond_to?(:current_site)
+     sql << "AND #{self.table_name}.site_id = #{current_site.id} " if self.respond_to?(:current_site)
      
      sql << "AND ("
      sql << tag_list.inject([]) do |arr,name|
