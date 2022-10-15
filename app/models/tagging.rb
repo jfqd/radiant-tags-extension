@@ -9,7 +9,7 @@ class Tagging < ActiveRecord::Base
   def before_destroy
     # if all the taggings for a particular <%= parent_association_name -%> are deleted, we want to 
     # delete the <%= parent_association_name -%> too
-    if meta_tag.taggings.count < 2 &&
+    if meta_tag.try(:taggings).try(:count).to_i < 2 &&
          meta_tag.locale == I18n.locale.to_s &&
            meta_tag.class_name == self.class.name
       # ensure tags with other locales and class-name are not deleted!
