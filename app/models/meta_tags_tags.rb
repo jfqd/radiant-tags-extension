@@ -385,12 +385,12 @@ module MetaTagsTags
     unless status == 'all'
       stat = Status[status]
       unless stat.nil?
-        options[:conditions] = "virtual = 0 AND status_id = #{stat.id} #{exclude} AND published_at <= #{ Time.current.strftime("%Y-%m-%d %H:%M:%S") }"
+        options[:conditions] = "pages.virtual = 0 AND pages.status_id = #{stat.id} #{exclude} AND pages.published_at <= '#{ Time.current.strftime("%Y-%m-%d %H:%M:%S") }'"
       else
         raise TagError.new(%{`status' attribute of `each' tag must be set to a valid status})
       end
     else
-      options[:conditions] = "virtual = 0 #{exclude}"
+      options[:conditions] = "pages.virtual = 0 #{exclude}"
     end
     options
   end
