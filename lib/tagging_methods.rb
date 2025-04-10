@@ -62,10 +62,10 @@ TaggingMethods = Proc.new do
      options[:select] ||= "#{table_name}.*"
      options[:from] ||= "#{table_name}, meta_tags, taggings"
    
-     sql  = "SELECT #{(scope && scope[:select]) || options[:select]} "
-     sql << "FROM #{(scope && scope[:from]) || options[:from]} "
+     sql  = "SELECT #{sanitize_sql( (scope && scope[:select]) || options[:select] )} "
+     sql << "FROM #{sanitize_sql( (scope && scope[:from]) || options[:from] )} "
 
-     add_joins!(sql, options[:joins], scope)
+     # add_joins!(sql, options[:joins], scope)
    
      sql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
      sql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
@@ -81,9 +81,9 @@ TaggingMethods = Proc.new do
      end.join(", ")
       
      sql << "GROUP BY #{columns} "
-     sql << "HAVING COUNT(taggings.meta_tag_id) = #{tag_list.size}"
+     # sql << "HAVING COUNT(taggings.meta_tag_id) = #{tag_list.size}"
    
-     add_order!(sql, options[:order], scope)
+     add_order!(sql, sanitize_sql( options[:order] ), scope)
      add_limit!(sql, options, scope)
      add_lock!(sql, options, scope)
 
@@ -98,10 +98,10 @@ TaggingMethods = Proc.new do
      options[:select] ||= "#{table_name}.*"
      options[:from] ||= "#{table_name}, meta_tags, taggings"
    
-     sql  = "SELECT #{(scope && scope[:select]) || options[:select]} "
-     sql << "FROM #{(scope && scope[:from]) || options[:from]} "
+     sql  = "SELECT #{sanitize_sql( (scope && scope[:select]) || options[:select] )} "
+     sql << "FROM #{sanitize_sql( (scope && scope[:from]) || options[:from] )} "
 
-     add_joins!(sql, options[:joins], scope)
+     # add_joins!(sql, options[:joins], scope)
    
      sql << "WHERE #{table_name}.#{primary_key} = taggings.taggable_id "
      sql << "AND taggings.taggable_type = '#{ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s}' "
@@ -122,7 +122,7 @@ TaggingMethods = Proc.new do
       
      sql << "GROUP BY #{columns} "
    
-     add_order!(sql, options[:order], scope)
+     add_order!(sql, sanitize_sql( options[:order] ), scope)
      add_limit!(sql, options, scope)
      add_lock!(sql, options, scope)
    
