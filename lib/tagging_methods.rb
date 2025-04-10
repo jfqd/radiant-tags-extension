@@ -73,7 +73,7 @@ TaggingMethods = Proc.new do
      sql << "AND #{self.table_name}.site_id = #{current_site.id} " if self.respond_to?(:current_site)
      
      sql << "AND (#{sanitize_sql(['meta_tags.name IN (?)', tag_list.map{|name| name.strip.squeeze(' ')}])}) "
-     sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
+     sql << "AND #{options[:conditions]} " if options[:conditions]
      sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
       
      columns = column_names.map do |column|
@@ -114,7 +114,7 @@ TaggingMethods = Proc.new do
      end.join(" OR ")
      sql << ") "
      sql << "AND #{sanitize_sql(["meta_tags.locale = ?", I18n.locale.to_s])} " if defined?(Globalize2Extension)
-     sql << "AND #{sanitize_sql(options[:conditions])} " if options[:conditions]
+     sql << "AND #{options[:conditions]} " if options[:conditions]
       
      columns = column_names.map do |column|
        "#{table_name}.#{column}"
