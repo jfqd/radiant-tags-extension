@@ -385,12 +385,12 @@ module MetaTagsTags
     unless status == 'all'
       stat = Status[status]
       unless stat.nil?
-        options[:conditions] = ["(`virtual` = ?) AND (status_id = ?) #{exclude} AND (published_at <= ?)", false, stat.id, Time.current]
+        options[:conditions] = ["virtual = ? AND status_id = ? #{exclude} AND (published_at <= ?)", false, stat.id, Time.current]
       else
         raise TagError.new(%{`status' attribute of `each' tag must be set to a valid status})
       end
     else
-      options[:conditions] = ["`virtual` = ? #{exclude}", false]
+      options[:conditions] = ["virtual = ? #{exclude}", false]
     end
     options
   end
